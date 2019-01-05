@@ -7,6 +7,9 @@
 
 package org.usfirst.frc.team5102.robot;
 
+import org.usfirst.frc.team5102.robot.subsystems.Drive;
+import org.usfirst.frc.team5102.robot.subsystems.SubsystemManager;
+
 import edu.wpi.first.wpilibj.IterativeRobot;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
@@ -29,10 +32,13 @@ public class Robot extends IterativeRobot {
 	 * used for any initialization code.
 	 */
 	@Override
-	public void robotInit() {
+	public void robotInit()
+	{
 		m_chooser.addDefault("Default Auto", kDefaultAuto);
 		m_chooser.addObject("My Auto", kCustomAuto);
 		SmartDashboard.putData("Auto choices", m_chooser);
+		
+		SubsystemManager.getInstance().addSubsystem(Drive.getInstance());
 	}
 
 	/**
@@ -47,18 +53,22 @@ public class Robot extends IterativeRobot {
 	 * SendableChooser make sure to add them to the chooser code above as well.
 	 */
 	@Override
-	public void autonomousInit() {
+	public void autonomousInit()
+	{
 		m_autoSelected = m_chooser.getSelected();
 		// autoSelected = SmartDashboard.getString("Auto Selector",
 		// defaultAuto);
 		System.out.println("Auto selected: " + m_autoSelected);
+		
+		SubsystemManager.getInstance().runAutonInit();
 	}
 
 	/**
 	 * This function is called periodically during autonomous.
 	 */
 	@Override
-	public void autonomousPeriodic() {
+	public void autonomousPeriodic()
+	{
 		switch (m_autoSelected) {
 			case kCustomAuto:
 				// Put custom auto code here
@@ -68,19 +78,25 @@ public class Robot extends IterativeRobot {
 				// Put default auto code here
 				break;
 		}
+		
+		SubsystemManager.getInstance().runAuton();
 	}
 
 	/**
 	 * This function is called periodically during operator control.
 	 */
 	@Override
-	public void teleopPeriodic() {
+	public void teleopPeriodic()
+	{
+		SubsystemManager.getInstance().runTeleop();
 	}
 
 	/**
 	 * This function is called periodically during test mode.
 	 */
 	@Override
-	public void testPeriodic() {
+	public void testPeriodic()
+	{
+		SubsystemManager.getInstance().runTest();
 	}
 }

@@ -1,0 +1,82 @@
+package org.usfirst.frc.team5102.robot.subsystems;
+
+import java.util.ArrayList;
+
+public class SubsystemManager
+{
+	ArrayList<Subsystem> subsystems;
+	
+	private static SubsystemManager manager = new SubsystemManager();
+	
+	private SubsystemManager()
+	{
+		subsystems = new ArrayList<>();
+	}
+	
+	public void addSubsystem(Subsystem system)
+	{
+		subsystems.add(system);
+	}
+	
+	public void runTeleopInitInit()
+	{
+		for(Subsystem system : subsystems)
+		{
+			system.teleop();
+		}
+	}
+	public void runTeleop()
+	{
+		for(Subsystem system : subsystems)
+		{
+			system.teleop();
+		}
+	}
+	public void runAutonInit()
+	{
+		for(Subsystem system : subsystems)
+		{
+			system.autonInit();
+		}
+	}
+	public void runAuton()
+	{
+		for(Subsystem system : subsystems)
+		{
+			system.auton();
+		}
+	}
+	public void runTestInit()
+	{
+		for(Subsystem system : subsystems)
+		{
+			system.testInit();
+		}
+	}
+	public void runTest()
+	{
+		for(Subsystem system : subsystems)
+		{
+			system.test();
+		}
+	}
+	public void runDisabledInit()
+	{
+		for(Subsystem system : subsystems)
+		{
+			system.disabledInit();
+		}
+	}
+	public void runDisabled()
+	{
+		for(Subsystem system : subsystems)
+		{
+			system.disabled();
+		}
+	}
+	
+	public static SubsystemManager getInstance()
+	{
+		return manager;
+	}
+}
