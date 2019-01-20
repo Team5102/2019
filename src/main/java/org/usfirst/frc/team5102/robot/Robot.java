@@ -28,19 +28,23 @@ public class Robot extends TimedRobot
 	 * This function is run when the robot is first started up and should be
 	 * used for any initialization code.
 	 */
+
+	 SubsystemManager systems = SubsystemManager.getInstance();
+	 DriverStation5102 ds = DriverStation5102.getInstance();
+
 	@Override
 	public void robotInit()
 	{
-		SubsystemManager.getInstance().addSubsystem(Drive.getInstance());
-		SubsystemManager.getInstance().addSubsystem(Grabber.getInstance());
+		systems.addSubsystem(Drive.getInstance());
+		systems.addSubsystem(Grabber.getInstance());
 	}
 
 	@Override
 	public void autonomousInit()
 	{
-		DriverStation5102.getInstance().setMode(RobotMode.AUTON);
+		ds.setMode(RobotMode.AUTON);
 
-		SubsystemManager.getInstance().runAutonInit();
+		systems.runAutonInit();
 	}
 
 	/**
@@ -49,13 +53,13 @@ public class Robot extends TimedRobot
 	@Override
 	public void autonomousPeriodic()
 	{
-		SubsystemManager.getInstance().runAuton();
+		systems.runAuton();
 	}
 
 	@Override
 	public void teleopInit()
 	{
-		DriverStation5102.getInstance().setMode(RobotMode.TELEOP);
+		ds.setMode(RobotMode.TELEOP);
 	}
 
 	/**
@@ -64,7 +68,7 @@ public class Robot extends TimedRobot
 	@Override
 	public void teleopPeriodic()
 	{
-		SubsystemManager.getInstance().runTeleop();
+		systems.runTeleop();
 	}
 
 	/**
@@ -73,23 +77,26 @@ public class Robot extends TimedRobot
 	@Override
 	public void testPeriodic()
 	{
-		SubsystemManager.getInstance().runTest();
+		systems.runTest();
 	}
 
 	@Override
 	public void disabledInit()
 	{
-		DriverStation5102.getInstance().setMode(RobotMode.DISABLED);
+		ds.setMode(RobotMode.DISABLED);
+
+		systems.runDisabledInit();
 	}
 
 	@Override
 	public void disabledPeriodic()
 	{
-		
+		systems.runDisabled();
 	}
 
+	@Override
 	public void robotPeriodic()
 	{
-		DriverStation5102.getInstance().updateDS();
+		ds.updateDS();
 	}
 }

@@ -9,8 +9,29 @@ import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 
 public class DriverStation5102
 {
+	private static final int DRIVE_CONTROLLER_PORT = 0;
+	private static final int SECONDARY_CONTROLLER_PORT = 1;
+	private static final int LAUNCHPAD_1_PORT = 2;
+	private static final int LAUNCHPAD_2_PORT = 3;
+	private static final int ENCODER_AXIS = 2;
+	private static final int LEFT_SLIDER_AXIS = 1;
+	private static final int RIGHT_SLIDER_AXIS = 0;
+
+	private static final int CONNECTED_PIN = 1;
+	private static final int ENABLED_PIN = 2;
+	private static final int ALLIANCE_PIN = 3;
+	private static final int ENC_METER_COMM_PIN_1 = 1;
+	private static final int ENC_METER_COMM_PIN_2 = 2;
+	private static final int ENC_METER_COMM_PIN_3 = 3;
+	private static final int ENC_METER_COMM_PIN_4 = 4;
+	private static final int AIR_METER_COMM_PIN_1 = 7;
+	private static final int AIR_METER_COMM_PIN_2 = 8;
+	private static final int AIR_METER_COMM_PIN_3 = 9;
+	private static final int AIR_METER_COMM_PIN_4 = 10;
+
+
 	public Joystick launchpad1, launchpad2;
-	private XboxController driveController, secondaryController;
+	private MyXbox driveController, secondaryController;
 	
 	boolean dataMode = false;
 	
@@ -42,25 +63,24 @@ public class DriverStation5102
 	
 	private DriverStation5102()
 	{
-		driveController = new XboxController(0);
-		secondaryController = new XboxController(1);
+		driveController = new MyXbox(DRIVE_CONTROLLER_PORT);
+		secondaryController = new MyXbox(SECONDARY_CONTROLLER_PORT);
 		
-		launchpad1 = new Joystick(2);
-		launchpad2 = new Joystick(3);
+		launchpad1 = new Joystick(LAUNCHPAD_1_PORT);
+		launchpad2 = new Joystick(LAUNCHPAD_2_PORT);
 		
 		modeOverride = false;
 		
 		airPressure = 0;
 		
-		enc = new AbsoluteEncoder(launchpad1, 2);
+		enc = new AbsoluteEncoder(launchpad1, ENCODER_AXIS);
 		enc.setRange(0, 720);
 		
 		chooser.setDefaultOption("No Auton", "No Auton");
 		chooser.addOption("Drive Forward", "Drive Forward");
-		chooser.addOption("Drive To Switch", "Drive To Switch");
 		chooser.addOption("Test Auton", "Test Auton");
-		chooser.addOption("Capture Switch", "Capture Switch");
 		SmartDashboard.putData("Auto Mode", chooser);
+
 		positionChooser.addOption("Left", "Left");
 		positionChooser.setDefaultOption("Center", "Center");
 		positionChooser.addOption("Right", "Right");
@@ -71,8 +91,8 @@ public class DriverStation5102
 	
 	public void updateDS()
 	{
-		setInfoStrip(0, airPressure, InfoStripMode.AIRPRESSURE);
-		setInfoStrip(1, enc.getScaledPercent(15), InfoStripMode.INFO);
+		setAirPressureStrip(airPressure);
+		setEncoderStrip(enc.getScaledPercent(15));
 		
 		if(driveController.getAButton())
 		{
@@ -85,19 +105,33 @@ public class DriverStation5102
 			connectedCounter = 0;
 	}
 
-	public void setInfoStrip(int meter, double number, InfoStripMode mode)
+	public void setEncoderStrip(double number)
 	{
-		if(mode == InfoStripMode.AIRPRESSURE)
-		{
-			int i, start;
-			for(i = 10, start = 54; number > 0 && number > start; i--)
-				start -= 6;
-			number = i;
-		}
-			
 		boolean[] pins = toBinary((int)number);
 
-		setCommPins(meter, pins[0], pins[1], pins[2], pins[3]);
+		launchpad2.setOutput(ENC_METER_COMM_PIN_1, pins[0]);
+		launchpad2.setOutput(ENC_METER_COMM_PIN_2, pins[1]);
+		launchpad2.setOutput(ENC_METER_COMM_PIN_3, pins[2]);
+		launchpad2.setOutput(ENC_METER_COMM_PIN_4, pins[3]);
+	}
+
+	private void setAirPressureStrip(double pressure)
+	{
+		double number = pressure;
+		int convertedNumber = 0;
+		while(number > 6 && convertedNumber <= 10)
+		{
+			number -= 6;
+			convertedNumber++;
+		}
+		number = convertedNumber;
+
+		boolean[] pins = toBinary((int)number);
+
+		launchpad1.setOutput(AIR_METER_COMM_PIN_1, pins[0]);
+		launchpad1.setOutput(AIR_METER_COMM_PIN_2, pins[1]);
+		launchpad1.setOutput(AIR_METER_COMM_PIN_3, pins[2]);
+		launchpad1.setOutput(AIR_METER_COMM_PIN_4, pins[3]);
 	}
 	
 	public void setMode(RobotMode mode)
@@ -105,11 +139,11 @@ public class DriverStation5102
 		switch(mode)
 		{
 			case DISABLED:
-				launchpad1.setOutput(2, false);
+				launchpad1.setOutput(ENABLED_PIN, false);
 				break;
 			case AUTON:
 			case TELEOP:
-				launchpad1.setOutput(2, true);
+				launchpad1.setOutput(ENABLED_PIN, true);
 				break;
 		}
 	}
@@ -129,7 +163,7 @@ public class DriverStation5102
 		boolean isAllianceRed = 
 			getAlliance() == Alliance.Red;
 
-		launchpad1.setOutput(3, isAllianceRed);
+		launchpad1.setOutput(ALLIANCE_PIN, isAllianceRed);
 	}
 	
 	public void setAirPressure(double pressure)
@@ -139,25 +173,7 @@ public class DriverStation5102
 	
 	public void setConnected()
 	{
-		launchpad1.setOutput(1, true);
-	}
-	
-	public void setCommPins(int mode, boolean pin1, boolean pin2, boolean pin3, boolean pin4)
-	{		
-		if(mode == 0)
-		{
-			launchpad1.setOutput(7, pin1);
-			launchpad1.setOutput(8, pin2);
-			launchpad1.setOutput(9, pin3);
-			launchpad1.setOutput(10, pin4);
-		}
-		else
-		{
-			launchpad2.setOutput(1, pin1);
-			launchpad2.setOutput(2, pin2);
-			launchpad2.setOutput(3, pin3);
-			launchpad2.setOutput(4, pin4);
-		}
+		launchpad1.setOutput(CONNECTED_PIN, true);
 	}
 	
 	public String getSelectedAuton()
@@ -203,14 +219,23 @@ public class DriverStation5102
 	public double getLeftSlider(double defaultValue)
 	{
 		if(isConnected())
-			return (((launchpad1.getRawAxis(1)+1)/2));
+			return (((launchpad1.getRawAxis(LEFT_SLIDER_AXIS)+1)/2));
 		return defaultValue;
 	}
 	public double getRightSlider(double defaultValue)
 	{
 		if(isConnected())
-			return (((launchpad1.getRawAxis(0)+1)/2));
+			return (((launchpad1.getRawAxis(RIGHT_SLIDER_AXIS)+1)/2));
 		return defaultValue;
+	}
+
+	public double applyDeadband(double magnitude, double deadband)
+	{
+		if(Math.abs(magnitude) > deadband)
+		{
+			return magnitude;
+		}
+		return 0.00;
 	}
 	
 	public static DriverStation5102 getInstance()
