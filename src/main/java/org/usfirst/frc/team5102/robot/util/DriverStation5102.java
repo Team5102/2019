@@ -3,7 +3,6 @@ package org.usfirst.frc.team5102.robot.util;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.DriverStation.Alliance;
 import edu.wpi.first.wpilibj.Joystick;
-import edu.wpi.first.wpilibj.XboxController;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 
@@ -13,18 +12,18 @@ public class DriverStation5102
 	private static final int SECONDARY_CONTROLLER_PORT = 1;
 	private static final int LAUNCHPAD_1_PORT = 2;
 	private static final int LAUNCHPAD_2_PORT = 3;
-	private static final int ENCODER_AXIS = 2;
-	private static final int LEFT_SLIDER_AXIS = 1;
-	private static final int RIGHT_SLIDER_AXIS = 0;
+	private static final int ENCODER_AXIS = 2;			//launchpad 1
+	private static final int LEFT_SLIDER_AXIS = 1;		//launchpad 1
+	private static final int RIGHT_SLIDER_AXIS = 0;		//launchpad 1
 
-	private static final int CONNECTED_PIN = 1;
-	private static final int ENABLED_PIN = 2;
-	private static final int ALLIANCE_PIN = 3;
-	private static final int ENC_METER_COMM_PIN_1 = 1;
+	private static final int CONNECTED_PIN = 1;			//launchpad 1
+	private static final int ENABLED_PIN = 2;			//launchpad 1
+	private static final int ALLIANCE_PIN = 3;			//launchpad 1
+	private static final int ENC_METER_COMM_PIN_1 = 1;	//launchpad 2
 	private static final int ENC_METER_COMM_PIN_2 = 2;
 	private static final int ENC_METER_COMM_PIN_3 = 3;
 	private static final int ENC_METER_COMM_PIN_4 = 4;
-	private static final int AIR_METER_COMM_PIN_1 = 7;
+	private static final int AIR_METER_COMM_PIN_1 = 7;	//launchpad 1
 	private static final int AIR_METER_COMM_PIN_2 = 8;
 	private static final int AIR_METER_COMM_PIN_3 = 9;
 	private static final int AIR_METER_COMM_PIN_4 = 10;
@@ -150,7 +149,7 @@ public class DriverStation5102
 
 	public boolean isConnected()
 	{
-		return !(connectedCounter > 10);
+		return (connectedCounter < 10);
 	}
 	
 	public Alliance getAlliance()
@@ -199,19 +198,16 @@ public class DriverStation5102
 			if(binaryString.charAt(i) == '1')
 			{
 				binary[i] = true;
-				//System.out.println("changing boolean value...");
 			}
 		}
-
-		//System.out.println(number + " - " + binary[0] + " " + binary[1] + " " + binary[2] + " " + binary[3]);
 		return binary;		//return the boolean array of binary values
 	}
 
-	public XboxController getDriveController()
+	public MyXbox getDriveController()
 	{
 		return driveController;
 	}
-	public XboxController getSecondaryController()
+	public MyXbox getSecondaryController()
 	{
 		return secondaryController;
 	}

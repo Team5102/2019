@@ -7,7 +7,9 @@
 
 package org.usfirst.frc.team5102.robot;
 
+import org.usfirst.frc.team5102.robot.subsystems.Arm;
 import org.usfirst.frc.team5102.robot.subsystems.Drive;
+import org.usfirst.frc.team5102.robot.subsystems.Elevator;
 import org.usfirst.frc.team5102.robot.subsystems.Grabber;
 import org.usfirst.frc.team5102.robot.subsystems.SubsystemManager;
 import org.usfirst.frc.team5102.robot.util.DriverStation5102;
@@ -37,6 +39,8 @@ public class Robot extends TimedRobot
 	{
 		systems.addSubsystem(Drive.getInstance());
 		systems.addSubsystem(Grabber.getInstance());
+		systems.addSubsystem(Arm.getInstance());
+		systems.addSubsystem(Elevator.getInstance());
 	}
 
 	@Override
