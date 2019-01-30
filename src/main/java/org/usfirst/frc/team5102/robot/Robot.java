@@ -12,9 +12,12 @@ import org.usfirst.frc.team5102.robot.subsystems.Drive;
 import org.usfirst.frc.team5102.robot.subsystems.Elevator;
 import org.usfirst.frc.team5102.robot.subsystems.Grabber;
 import org.usfirst.frc.team5102.robot.subsystems.SubsystemManager;
+import org.usfirst.frc.team5102.robot.subsystems.Wrist;
+import org.usfirst.frc.team5102.robot.util.DigitBoard;
 import org.usfirst.frc.team5102.robot.util.DriverStation5102;
 import org.usfirst.frc.team5102.robot.util.DriverStation5102.RobotMode;
 
+import edu.wpi.first.wpilibj.RobotController;
 import edu.wpi.first.wpilibj.TimedRobot;
 
 /**
@@ -40,6 +43,7 @@ public class Robot extends TimedRobot
 		systems.addSubsystem(Drive.getInstance());
 		systems.addSubsystem(Grabber.getInstance());
 		systems.addSubsystem(Arm.getInstance());
+		systems.addSubsystem(Wrist.getInstance());
 		systems.addSubsystem(Elevator.getInstance());
 	}
 
@@ -102,5 +106,7 @@ public class Robot extends TimedRobot
 	public void robotPeriodic()
 	{
 		ds.updateDS();
+
+		DigitBoard.getInstance().writeDigits(RobotController.getBatteryVoltage() + "");
 	}
 }

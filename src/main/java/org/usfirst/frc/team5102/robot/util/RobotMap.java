@@ -17,6 +17,7 @@ public interface RobotMap
 
 	//Arm
 	public static final int ARM_MOTOR = 8;			//CAN bus
+	public static final int WRIST_MOTOR = 9;		//CAN bus
 
 	//Grabber
 	public static final int GRABBER_MOTOR_PWM = 9;	//PWM output
