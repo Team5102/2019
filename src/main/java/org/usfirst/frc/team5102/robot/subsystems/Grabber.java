@@ -1,37 +1,37 @@
 package org.usfirst.frc.team5102.robot.subsystems;
 
+import com.ctre.phoenix.motorcontrol.ControlMode;
+import com.ctre.phoenix.motorcontrol.can.VictorSPX;
+
 import org.usfirst.frc.team5102.robot.util.RobotMap;
 
 import edu.wpi.first.wpilibj.GenericHID.Hand;
-import edu.wpi.first.wpilibj.NidecBrushless;
 
 public class Grabber extends Subsystem
 {
     private static Grabber grabberInstance;
 
-    private NidecBrushless grabberMotor;
+    private VictorSPX grabberMotor;
 
-    private int intakeSpeed = -1;
-    private int shootSpeed = 1;
+    private double intakeSpeed = -1;
+    private double shootSpeed = 1;
 
     private Grabber()
     {
-        grabberMotor = new NidecBrushless(
-            RobotMap.GRABBER_MOTOR_PWM,
-            RobotMap.GRABBER_MOTOR_DIO);
+        grabberMotor = new VictorSPX(RobotMap.GRABBER_MOTOR);
     }
 
     public void intake()
     {
-        grabberMotor.set(intakeSpeed);
+        grabberMotor.set(ControlMode.PercentOutput, intakeSpeed);
     }
     public void shoot()
     {
-        grabberMotor.set(shootSpeed);
+        grabberMotor.set(ControlMode.PercentOutput, shootSpeed);
     }
     public void stopMotors()
     {
-        grabberMotor.set(0);
+        grabberMotor.set(ControlMode.PercentOutput, 0);
     }
 
     public void teleop()

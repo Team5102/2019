@@ -26,7 +26,7 @@ public class AbsoluteEncoder
 				while(true)
 				{
 					try {
-						Thread.sleep(10);
+						Thread.sleep(5);
 					} catch (InterruptedException e) {}
 					
 					int value = getRawValue();
@@ -110,7 +110,7 @@ public class AbsoluteEncoder
 		setValueDegrees(toDegrees(percent));
 	}
 	
-	public int getPercent()
+	public double getPercent()
 	{
 		double totalRange = rangeMax-rangeMin;
 		double value = (getValue()-rangeMin);
@@ -118,8 +118,13 @@ public class AbsoluteEncoder
 		
 		return (int)Math.round(percent);
 	}
+
+	public int getPercentRounded()
+	{
+		return (int)Math.round(getPercent());
+	}
 	
-	public int getScaledPercent(int scaleFactor)
+	public double getScaledPercent(double scaleFactor)
 	{
 		return (getPercent()*scaleFactor)/100;
 	}

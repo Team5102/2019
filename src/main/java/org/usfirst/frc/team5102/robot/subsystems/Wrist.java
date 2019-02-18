@@ -7,8 +7,8 @@
 
 package org.usfirst.frc.team5102.robot.subsystems;
 
-import com.ctre.phoenix.motorcontrol.FeedbackDevice;
-import com.ctre.phoenix.motorcontrol.can.TalonSRX;
+import com.revrobotics.CANSparkMax;
+import com.revrobotics.CANSparkMaxLowLevel.MotorType;
 
 import org.usfirst.frc.team5102.robot.util.RobotMap;
 
@@ -16,20 +16,19 @@ public class Wrist extends PIDSubsystem
 {
     private static Wrist wristInstance;
 
-    private TalonSRX wristMotor;
+    private CANSparkMax wristMotor;
 
     public Wrist()
     {
         super(1, 0, 0);
 
-        wristMotor = new TalonSRX(RobotMap.WRIST_MOTOR);
-        wristMotor.configSelectedFeedbackSensor(FeedbackDevice.CTRE_MagEncoder_Relative);
+        wristMotor = new CANSparkMax(RobotMap.WRIST_MOTOR, MotorType.kBrushless);
     }
 
     @Override
     public void teleop()
     {
-        System.out.println(wristMotor.getSelectedSensorPosition());
+
     }
 
     @Override
@@ -38,8 +37,9 @@ public class Wrist extends PIDSubsystem
     }
 
     @Override
-    protected void usePIDOutput(double output) {
-
+    protected void usePIDOutput(double output)
+    {
+        wristMotor.set(output);
     }
 
     public static Wrist getInstance()

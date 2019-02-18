@@ -100,6 +100,8 @@ public class Robot extends TimedRobot
 	public void disabledPeriodic()
 	{
 		systems.runDisabled();
+
+		System.out.println(Elevator.getInstance().getRawHeight());
 	}
 
 	@Override
@@ -107,6 +109,6 @@ public class Robot extends TimedRobot
 	{
 		ds.updateDS();
 
-		DigitBoard.getInstance().writeDigits(RobotController.getBatteryVoltage() + "");
+		//DigitBoard.getInstance().writeDigits(RobotController.getBatteryVoltage() + "");
 	}
 }

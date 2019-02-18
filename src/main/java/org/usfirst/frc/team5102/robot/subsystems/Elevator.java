@@ -7,41 +7,67 @@
 
 package org.usfirst.frc.team5102.robot.subsystems;
 
+import com.revrobotics.CANPIDController;
 import com.revrobotics.CANSparkMax;
 import com.revrobotics.CANSparkMaxLowLevel.MotorType;
+import com.revrobotics.ControlType;
 
+import org.usfirst.frc.team5102.robot.util.DigitBoard;
 import org.usfirst.frc.team5102.robot.util.RobotMap;
-import org.usfirst.frc.team5102.robot.util.SparkEncoder;
 
-public class Elevator extends PIDSubsystem
+public class Elevator extends Subsystem
 {
     private static Elevator elevatorInstance;
 
-    CANSparkMax elevatorMotor;
-    SparkEncoder elevatorPosition;
+    private CANSparkMax elevatorMotor1, elevatorMotor2;
+
+    private CANPIDController elevatorPID;
+
+    private final int MAX_HEIGHT = 100; //initial value, will change later
 
     public Elevator()
     {
-        super(1, 0, 0);
+        elevatorMotor1 = new CANSparkMax(RobotMap.ELEVATOR_MOTOR_1, MotorType.kBrushless);
+        elevatorMotor2 = new CANSparkMax(RobotMap.ELEVATOR_MOTOR_2, MotorType.kBrushless);
+        elevatorMotor2.follow(elevatorMotor1);
 
-        elevatorMotor = new CANSparkMax(RobotMap.ELEVATOR_MOTOR, MotorType.kBrushless);
-        elevatorPosition = new SparkEncoder(elevatorMotor);
+        elevatorPID = elevatorMotor1.getPIDController();
+        elevatorPID.setP(0.04);
+        elevatorPID.setI(0.00001);
+        elevatorPID.setD(0.0);
+        elevatorPID.setSmartMotionMaxAccel(5, 0);
+        elevatorPID.setSmartMotionMaxVelocity(50, 0);
+        elevatorPID.setOutputRange(-1, 1);
+        elevatorPID.setSmartMotionAllowedClosedLoopError(1, 0);
+    }
 
-        setOutputRange(-0.7, 0.7);
-        setAbsoluteTolerance(0.5);
-        setSetpoint(0);
+    public double getRawHeight()
+    {
+        return elevatorMotor1.getEncoder().getPosition();
     }
 
     @Override
-    protected double returnPIDInput()
+    public void teleop()
     {
-        return elevatorPosition.getPosition();
+        
     }
 
     @Override
-    protected void usePIDOutput(double output)
+    public void auton()
     {
-        elevatorMotor.set(output);
+        System.out.println(getRawHeight() + " - " + elevatorMotor1.get());
+        elevatorPID.setReference(10, ControlType.kSmartMotion);
+
+        //DigitBoard.getInstance().writeDigits(ds.getEncoder().getPercent() + "");
+
+        // if(DigitBoard.getInstance().getA())
+        // {
+        //     ds.getEncoder().setValueDegrees(180);
+        // }
+        // else if(DigitBoard.getInstance().getB())
+        // {
+        //     ds.getEncoder().setValueDegrees(360);
+        // }
     }
 
     public static Elevator getInstance()

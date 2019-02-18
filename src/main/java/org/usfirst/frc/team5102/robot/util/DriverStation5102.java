@@ -29,16 +29,14 @@ public class DriverStation5102
 	private static final int AIR_METER_COMM_PIN_4 = 10;
 
 
-	public Joystick launchpad1, launchpad2;
+	private Joystick launchpad1, launchpad2;
 	private MyXbox driveController, secondaryController;
-	
-	boolean dataMode = false;
-	
+		
 	double airPressure;
 	
-	AbsoluteEncoder enc;
+	private AbsoluteEncoder enc;
 
-	int connectedCounter = 0;
+	private int connectedCounter = 0;
 	
 	public enum RobotMode
 	{
@@ -52,9 +50,7 @@ public class DriverStation5102
 		AIRPRESSURE,
 		INFO
 	}
-	
-	boolean modeOverride;
-	
+		
 	SendableChooser<String> chooser = new SendableChooser<>();
 	SendableChooser<String> positionChooser = new SendableChooser<>();
 		
@@ -67,9 +63,7 @@ public class DriverStation5102
 		
 		launchpad1 = new Joystick(LAUNCHPAD_1_PORT);
 		launchpad2 = new Joystick(LAUNCHPAD_2_PORT);
-		
-		modeOverride = false;
-		
+				
 		airPressure = 0;
 		
 		enc = new AbsoluteEncoder(launchpad1, ENCODER_AXIS);
@@ -180,7 +174,7 @@ public class DriverStation5102
 		return chooser.getSelected();
 	}
 	
-	public boolean[] toBinary(int number)
+	private boolean[] toBinary(int number)
 	{
 		boolean[] binary = new boolean[]{false,false,false,false};	//create new boolean array and set contents to zero
 		
@@ -225,13 +219,9 @@ public class DriverStation5102
 		return defaultValue;
 	}
 
-	public double applyDeadband(double magnitude, double deadband)
+	public AbsoluteEncoder getEncoder()
 	{
-		if(Math.abs(magnitude) > deadband)
-		{
-			return magnitude;
-		}
-		return 0.00;
+		return enc;
 	}
 	
 	public static DriverStation5102 getInstance()

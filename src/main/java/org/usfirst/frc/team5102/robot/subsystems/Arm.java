@@ -7,68 +7,66 @@
 
 package org.usfirst.frc.team5102.robot.subsystems;
 
+import com.revrobotics.CANPIDController;
 import com.revrobotics.CANSparkMax;
 import com.revrobotics.CANSparkMaxLowLevel.MotorType;
 
 import org.usfirst.frc.team5102.robot.util.RobotMap;
-import org.usfirst.frc.team5102.robot.util.SparkEncoder;
 
 /**
  * Add your docs here.
  */
-public class Arm extends PIDSubsystem
+public class Arm extends Subsystem
 {
     private static Arm armInstance;
 
     private CANSparkMax armMotor;
-    private SparkEncoder armPosition;
+
+    private CANPIDController armPID;
 
     public Arm()
     {
-        super(0.05, 0.0001, 0.006);
-
         armMotor = new CANSparkMax(RobotMap.ARM_MOTOR, MotorType.kBrushless);
-        armPosition = new SparkEncoder(armMotor);
-
-        setOutputRange(-0.7, 0.7);
-        setAbsoluteTolerance(0.5);
-        setSetpoint(0);
+        
+        armPID = armMotor.getPIDController();
+        armPID.setP(0.0);       //blank values, will tune later
+        armPID.setI(0.0);
+        armPID.setD(0.0);
+        armPID.setSmartMotionMaxAccel(5, 0);
+        armPID.setSmartMotionMaxVelocity(50, 0);
+        armPID.setOutputRange(-1, 1);
+        armPID.setSmartMotionAllowedClosedLoopError(1, 0);
+        
+        armMotor.getEncoder().setPosition(0);
     }
 
-    @Override
-    protected double returnPIDInput()
+    public double getRawPosition()
     {
-        return armPosition.getPosition();
-    }
-
-    @Override
-    protected void usePIDOutput(double output)
-    {
-        armMotor.set(output);
+        return armMotor.getEncoder().getPosition();
     }
 
     @Override
     public void autonInit()
     {
-        enable();
+        
     }
 
     @Override
     public void auton()
     {
-        setSetpoint(ds.getLeftSlider(0)*50);
+        
     }
 
     @Override
     void teleopInit()
     {
-        disable();
+        
     }
 
     @Override
     void disabledInit()
     {
-        disable();
+        
     }
 
     public static Arm getInstance()
