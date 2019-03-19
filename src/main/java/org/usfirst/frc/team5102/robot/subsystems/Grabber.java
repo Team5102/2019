@@ -3,8 +3,10 @@ package org.usfirst.frc.team5102.robot.subsystems;
 import com.ctre.phoenix.motorcontrol.ControlMode;
 import com.ctre.phoenix.motorcontrol.can.VictorSPX;
 
+import org.usfirst.frc.team5102.robot.util.DigitBoard;
 import org.usfirst.frc.team5102.robot.util.RobotMap;
 
+import edu.wpi.first.wpilibj.DigitalInput;
 import edu.wpi.first.wpilibj.GenericHID.Hand;
 
 public class Grabber extends Subsystem
@@ -13,12 +15,15 @@ public class Grabber extends Subsystem
 
     private VictorSPX grabberMotor;
 
+    private DigitalInput loaded;
+
     private double intakeSpeed = -1;
     private double shootSpeed = 1;
 
     private Grabber()
     {
         grabberMotor = new VictorSPX(RobotMap.GRABBER_MOTOR);
+        loaded = new DigitalInput(RobotMap.BALL_LOADED);
     }
 
     public void intake()
@@ -48,6 +53,11 @@ public class Grabber extends Subsystem
         {
             stopMotors();
         }
+    }
+
+    public void disabled()
+    {
+        //DigitBoard.getInstance().writeDigits(loaded.get() ? "true" : "false");
     }
 
 

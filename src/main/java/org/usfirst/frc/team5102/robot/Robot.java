@@ -17,6 +17,7 @@ import org.usfirst.frc.team5102.robot.util.DigitBoard;
 import org.usfirst.frc.team5102.robot.util.DriverStation5102;
 import org.usfirst.frc.team5102.robot.util.DriverStation5102.RobotMode;
 
+import edu.wpi.first.cameraserver.CameraServer;
 import edu.wpi.first.wpilibj.RobotController;
 import edu.wpi.first.wpilibj.TimedRobot;
 
@@ -45,6 +46,8 @@ public class Robot extends TimedRobot
 		systems.addSubsystem(Arm.getInstance());
 		systems.addSubsystem(Wrist.getInstance());
 		systems.addSubsystem(Elevator.getInstance());
+
+		CameraServer.getInstance().startAutomaticCapture();
 	}
 
 	@Override
@@ -101,7 +104,7 @@ public class Robot extends TimedRobot
 	{
 		systems.runDisabled();
 
-		System.out.println(Elevator.getInstance().getRawHeight());
+		//System.out.println(Elevator.getInstance().getRawHeight());
 	}
 
 	@Override

@@ -35,5 +35,7 @@ public interface RobotMap
 	//====================I/O====================
 	//Pneumatics
 	public static final int PRESSURE_SENSOR = 0;	//analog input
+
+	public static final int BALL_LOADED = 9;		//DIO
 	
 }

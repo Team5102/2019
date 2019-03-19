@@ -11,9 +11,12 @@ import com.revrobotics.CANPIDController;
 import com.revrobotics.CANSparkMax;
 import com.revrobotics.CANSparkMaxLowLevel.MotorType;
 import com.revrobotics.ControlType;
+import com.revrobotics.CANSparkMax.IdleMode;
 
 import org.usfirst.frc.team5102.robot.util.DigitBoard;
 import org.usfirst.frc.team5102.robot.util.RobotMap;
+
+import edu.wpi.first.wpilibj.GenericHID.Hand;
 
 public class Elevator extends Subsystem
 {
@@ -29,7 +32,10 @@ public class Elevator extends Subsystem
     {
         elevatorMotor1 = new CANSparkMax(RobotMap.ELEVATOR_MOTOR_1, MotorType.kBrushless);
         elevatorMotor2 = new CANSparkMax(RobotMap.ELEVATOR_MOTOR_2, MotorType.kBrushless);
-        elevatorMotor2.follow(elevatorMotor1);
+        elevatorMotor1.setIdleMode(IdleMode.kBrake);
+        elevatorMotor2.setIdleMode(IdleMode.kBrake);
+
+        elevatorMotor2.follow(elevatorMotor1, true);
 
         elevatorPID = elevatorMotor1.getPIDController();
         elevatorPID.setP(0.04);
@@ -49,7 +55,7 @@ public class Elevator extends Subsystem
     @Override
     public void teleop()
     {
-        
+        elevatorMotor1.set(ds.getSecondaryController().getY(Hand.kLeft));
     }
 
     @Override
