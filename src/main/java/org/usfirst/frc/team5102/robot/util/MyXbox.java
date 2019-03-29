@@ -7,6 +7,9 @@
 
 package org.usfirst.frc.team5102.robot.util;
 
+import java.util.Timer;
+import java.util.TimerTask;
+
 import edu.wpi.first.wpilibj.XboxController;
 
 /**
@@ -16,9 +19,16 @@ public class MyXbox extends XboxController
 {
     private double defaultDeadband = 0.16;
 
+    private Timer rumbleTimer;
+
+    private boolean rumbling;
+
     public MyXbox(int port)
     {
         super(port);
+
+        rumbleTimer = new Timer();
+        rumbling = false;
     }
 
     public MyXbox(int port, double defaultDeadband)
@@ -58,5 +68,34 @@ public class MyXbox extends XboxController
     public void setDefaultDeadband(double defaultDeadband)
     {
         this.defaultDeadband = defaultDeadband;
+    }
+
+    public void rumble(int time)
+    {
+        if(!rumbling)
+        {
+            this.setRumble(RumbleType.kLeftRumble, 1);
+            this.setRumble(RumbleType.kRightRumble, 1);
+            rumbling = true;
+
+            rumbleTimer.schedule(new TimerTask()
+            {
+                @Override
+                public void run()
+                {
+                    setRumble(RumbleType.kLeftRumble, 0);
+                    setRumble(RumbleType.kRightRumble, 0);
+
+                    rumbleTimer.schedule(new TimerTask()
+                    {
+                        @Override
+                        public void run()
+                        {
+                            rumbling = false;
+                        }
+                    }, 500);
+                }
+            }, time);
+        }
     }
 }

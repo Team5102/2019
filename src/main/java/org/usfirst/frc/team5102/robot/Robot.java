@@ -11,6 +11,7 @@ import org.usfirst.frc.team5102.robot.subsystems.Arm;
 import org.usfirst.frc.team5102.robot.subsystems.Drive;
 import org.usfirst.frc.team5102.robot.subsystems.Elevator;
 import org.usfirst.frc.team5102.robot.subsystems.Grabber;
+import org.usfirst.frc.team5102.robot.subsystems.Lift;
 import org.usfirst.frc.team5102.robot.subsystems.SubsystemManager;
 import org.usfirst.frc.team5102.robot.subsystems.Wrist;
 import org.usfirst.frc.team5102.robot.util.DigitBoard;
@@ -46,8 +47,10 @@ public class Robot extends TimedRobot
 		systems.addSubsystem(Arm.getInstance());
 		systems.addSubsystem(Wrist.getInstance());
 		systems.addSubsystem(Elevator.getInstance());
+		systems.addSubsystem(Lift.getInstance());
 
-		CameraServer.getInstance().startAutomaticCapture();
+		CameraServer.getInstance().startAutomaticCapture(0);
+		//CameraServer.getInstance().startAutomaticCapture(1);
 	}
 
 	@Override
@@ -55,6 +58,7 @@ public class Robot extends TimedRobot
 	{
 		ds.setMode(RobotMode.AUTON);
 
+		systems.enableAll();
 		systems.runAutonInit();
 	}
 
@@ -64,13 +68,17 @@ public class Robot extends TimedRobot
 	@Override
 	public void autonomousPeriodic()
 	{
-		systems.runAuton();
+		systems.runTeleop();
+		PresetManager.teleop();
 	}
 
 	@Override
 	public void teleopInit()
 	{
 		ds.setMode(RobotMode.TELEOP);
+
+		systems.enableAll();
+		systems.runTeleopInit();
 	}
 
 	/**
@@ -80,6 +88,7 @@ public class Robot extends TimedRobot
 	public void teleopPeriodic()
 	{
 		systems.runTeleop();
+		PresetManager.teleop();
 	}
 
 	/**
@@ -105,13 +114,24 @@ public class Robot extends TimedRobot
 		systems.runDisabled();
 
 		//System.out.println(Elevator.getInstance().getRawHeight());
+
+		if(DigitBoard.getInstance().getA())
+		{
+			systems.disableAll();
+		}
+		else if(DigitBoard.getInstance().getB())
+		{
+			systems.enableAll();
+		}
 	}
 
 	@Override
 	public void robotPeriodic()
 	{
+		systems.runPeriodic();
+
 		ds.updateDS();
 
-		//DigitBoard.getInstance().writeDigits(RobotController.getBatteryVoltage() + "");
+		DigitBoard.getInstance().writeDigits(RobotController.getBatteryVoltage() + "");
 	}
 }

@@ -18,7 +18,7 @@ public class SubsystemManager
 		subsystems.add(system);
 	}
 	
-	public void runTeleopInitInit()
+	public void runTeleopInit()
 	{
 		for(Subsystem system : subsystems)
 		{
@@ -72,6 +72,29 @@ public class SubsystemManager
 		for(Subsystem system : subsystems)
 		{
 			system.disabled();
+		}
+	}
+
+	public void runPeriodic()
+	{
+		for(Subsystem system : subsystems)
+		{
+			system.periodic();
+		}
+	}
+
+	public void disableAll()
+	{
+		for(Subsystem system : subsystems)
+		{
+			system.disable();
+		}
+	}
+	public void enableAll()
+	{
+		for(Subsystem system : subsystems)
+		{
+			system.enable();
 		}
 	}
 	

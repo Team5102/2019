@@ -21,16 +21,16 @@ public interface RobotMap
 	public static final int WRIST_MOTOR = 10;		//CAN bus
 
 	//Grabber
-	public static final int GRABBER_MOTOR = 11;		//CAN bus
+	public static final int GRABBER_MOTOR = 12;		//CAN bus
 
 	//Lift
-	public static final int LIFT_MOTOR_1 = 13;		//CAN bus
-	public static final int LIFT_MOTOR_2 = 14;
+	public static final int LIFT_MOTOR = 13;		//CAN bus
+	public static final int LIFT_DRIVE_MOTOR = 14;
 
 	
 	//====================Pneumatics====================
 	
-	public static final int SHIFTER_SOLENOID = 0;
+	public static final int HATCH_EJECT_SOLENOID = 0;
 	
 	//====================I/O====================
 	//Pneumatics

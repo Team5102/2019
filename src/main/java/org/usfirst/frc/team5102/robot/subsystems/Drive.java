@@ -40,12 +40,7 @@ public class Drive extends Subsystem
 		// rightDriveMotor2.restoreFactoryDefaults();
 		// rightDriveMotor3.restoreFactoryDefaults();
 
-		leftDriveMotor1.setIdleMode(IdleMode.kBrake);
-		leftDriveMotor2.setIdleMode(IdleMode.kBrake);
-		leftDriveMotor3.setIdleMode(IdleMode.kBrake);
-		rightDriveMotor1.setIdleMode(IdleMode.kBrake);
-		rightDriveMotor2.setIdleMode(IdleMode.kBrake);
-		rightDriveMotor3.setIdleMode(IdleMode.kBrake);
+		setIdleMode(IdleMode.kCoast);
 
 		leftDriveMotor2.follow(leftDriveMotor1);
 		leftDriveMotor3.follow(leftDriveMotor1);
@@ -56,9 +51,26 @@ public class Drive extends Subsystem
 		
 		//robotDrive = new DifferentialDrive(new Talon(0), new Talon(1));
 
-		pid = DrivePID.getInstance();
+		//pid = DrivePID.getInstance();
 	}
 
+	public void setIdleMode(IdleMode mode)
+	{
+		leftDriveMotor1.setIdleMode(mode);
+		leftDriveMotor2.setIdleMode(mode);
+		leftDriveMotor3.setIdleMode(mode);
+		rightDriveMotor1.setIdleMode(mode);
+		rightDriveMotor2.setIdleMode(mode);
+		rightDriveMotor3.setIdleMode(mode);
+	}
+
+	@Override
+	public void teleopInit()
+	{
+		setIdleMode(IdleMode.kBrake);
+	}
+
+	@Override
 	public void teleop()
 	{
 		robotDrive.arcadeDrive(
@@ -67,12 +79,16 @@ public class Drive extends Subsystem
 		);
 	}
 
+	@Override
 	public void autonInit()
 	{
+		setIdleMode(IdleMode.kBrake);
+
 		//pid.setDriveTarget(10);
 		//pid.enable();
 	}
 
+	@Override
 	public void auton()
 	{
 		robotDrive.arcadeDrive(0, 0);
@@ -81,6 +97,13 @@ public class Drive extends Subsystem
 		//System.out.println("pidGet: " + driveEnc.getLeft() + " - pidWrite: " + pid.getMagnitude());
 	}
 
+	@Override
+	public void disabledInit()
+	{
+		setIdleMode(IdleMode.kCoast);
+	}
+
+	@Override
 	public void disabled()
 	{
 		

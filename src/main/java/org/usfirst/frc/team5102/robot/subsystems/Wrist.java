@@ -14,19 +14,22 @@ import com.revrobotics.CANSparkMax.IdleMode;
 import com.revrobotics.CANSparkMaxLowLevel.MotorType;
 import com.revrobotics.ControlType;
 
-import org.usfirst.frc.team5102.robot.util.DigitBoard;
+import org.usfirst.frc.team5102.robot.Presets;
 import org.usfirst.frc.team5102.robot.util.RobotMap;
 
-import edu.wpi.first.wpilibj.GenericHID.Hand;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 
-public class Wrist extends Subsystem
+public class Wrist extends PIDSubsystem
 {
     private static Wrist wristInstance;
 
     private CANSparkMax wristMotor;
     private CANPIDController wristPID;
 
-    public Wrist() {
+    private boolean switchTriggered = false;
+
+    public Wrist()
+    {
         wristMotor = new CANSparkMax(RobotMap.WRIST_MOTOR, MotorType.kBrushless);
         wristMotor.restoreFactoryDefaults();
         wristMotor = new CANSparkMax(RobotMap.WRIST_MOTOR, MotorType.kBrushless);
@@ -43,46 +46,88 @@ public class Wrist extends Subsystem
         wristPID.setSmartMotionAllowedClosedLoopError(5, 0);
     }
 
+    public double getPosition()
+    {
+        return wristMotor.getEncoder().getPosition();
+    }
+
+    public void setPosition(int position)
+    {
+        super.target = position;
+        wristPID.setReference(position, ControlType.kPosition);
+    }
+
+    public void stop()
+    {
+        wristMotor.stopMotor();
+    }
+
+    public void disable()
+    {
+        wristMotor.setIdleMode(IdleMode.kCoast);
+    }
+    public void enable()
+    {
+        wristMotor.setIdleMode(IdleMode.kBrake);
+    }
+
     @Override
     public void teleop()
     {
-        
-
-        // DigitBoard.getInstance().writeDigits(wristMotor.getEncoder().getPosition() + "");
-        System.out.println(wristMotor.getEncoder().getPosition());
-
-        if(wristMotor.getReverseLimitSwitch(LimitSwitchPolarity.kNormallyOpen).get())
-            wristMotor.getEncoder().setPosition(0);
-        else if(wristMotor.getForwardLimitSwitch(LimitSwitchPolarity.kNormallyOpen).get())
-            wristMotor.getEncoder().setPosition(47);
-
-        if(ds.getSecondaryController().getAButton())
+        if(!Presets.isRunning())
         {
-            wristPID.setReference(30, ControlType.kPosition);
-        }
-        else if(ds.getSecondaryController().getBButton())
-        {
-            wristPID.setReference(-3, ControlType.kPosition);
-        }
-        else if(ds.getSecondaryController().getXButton())
-        {
-            wristPID.setReference(42, ControlType.kPosition);
-        }
-        else
-        {
-            wristMotor.set(ds.getSecondaryController().getY(Hand.kRight));
+            if(ds.getSecondaryController().getAButton())
+            {
+                setPosition(25);
+            }
+            else if(ds.getSecondaryController().getBButton())
+            {
+                setPosition(0);
+            }
+            else if(ds.getSecondaryController().getXButton())
+            {
+                setPosition(50);
+            }
         }
     }
 
     public void disabled()
     {
         //DigitBoard.getInstance().writeDigits(wristMotor.getEncoder().getPosition()*10 + "");
-        System.out.println(wristMotor.getEncoder().getPosition());
+        //System.out.println(wristMotor.getEncoder().getPosition());
         //System.out.println(wristMotor.getForwardLimitSwitch(LimitSwitchPolarity.kNormallyOpen));
 
         if(wristMotor.getReverseLimitSwitch(LimitSwitchPolarity.kNormallyOpen).get())
             wristMotor.getEncoder().setPosition(0);
-        DigitBoard.getInstance().writeDigits(wristMotor.getForwardLimitSwitch(LimitSwitchPolarity.kNormallyOpen).get() ? "true" : "false");
+        //DigitBoard.getInstance().writeDigits(wristMotor.getForwardLimitSwitch(LimitSwitchPolarity.kNormallyOpen).get() ? "true" : "false");
+    }
+
+    @Override
+    public void periodic()
+    {
+
+        SmartDashboard.putNumber("Wrist Position", Math.round(getPosition()));
+
+        if(wristMotor.getReverseLimitSwitch(LimitSwitchPolarity.kNormallyOpen).get())
+        {
+            if(!switchTriggered)
+            {
+                wristMotor.getEncoder().setPosition(0);
+                switchTriggered = true;
+            }
+        }
+        else if(wristMotor.getForwardLimitSwitch(LimitSwitchPolarity.kNormallyOpen).get())
+        {
+            if(!switchTriggered)
+            {
+                wristMotor.getEncoder().setPosition(50);
+                switchTriggered = true;
+            }
+        }
+        else
+        {
+            switchTriggered = false;
+        }
     }
 
     public static Wrist getInstance()

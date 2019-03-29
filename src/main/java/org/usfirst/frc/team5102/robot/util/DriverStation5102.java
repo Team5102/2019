@@ -69,15 +69,15 @@ public class DriverStation5102
 		enc = new AbsoluteEncoder(launchpad1, ENCODER_AXIS);
 		enc.setRange(0, 720);
 		
-		chooser.setDefaultOption("No Auton", "No Auton");
-		chooser.addOption("Drive Forward", "Drive Forward");
-		chooser.addOption("Test Auton", "Test Auton");
-		SmartDashboard.putData("Auto Mode", chooser);
+		// chooser.setDefaultOption("No Auton", "No Auton");
+		// chooser.addOption("Drive Forward", "Drive Forward");
+		// chooser.addOption("Test Auton", "Test Auton");
+		// SmartDashboard.putData("Auto Mode", chooser);
 
-		positionChooser.addOption("Left", "Left");
-		positionChooser.setDefaultOption("Center", "Center");
-		positionChooser.addOption("Right", "Right");
-		SmartDashboard.putData("Starting Position", positionChooser);
+		// positionChooser.addOption("Left", "Left");
+		// positionChooser.setDefaultOption("Center", "Center");
+		// positionChooser.addOption("Right", "Right");
+		// SmartDashboard.putData("Starting Position", positionChooser);
 		
 		setConnected();
 	}

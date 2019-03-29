@@ -7,6 +7,7 @@ import org.usfirst.frc.team5102.robot.util.DigitBoard;
 import org.usfirst.frc.team5102.robot.util.RobotMap;
 
 import edu.wpi.first.wpilibj.DigitalInput;
+import edu.wpi.first.wpilibj.Solenoid;
 import edu.wpi.first.wpilibj.GenericHID.Hand;
 
 public class Grabber extends Subsystem
@@ -15,7 +16,9 @@ public class Grabber extends Subsystem
 
     private VictorSPX grabberMotor;
 
-    private DigitalInput loaded;
+    private DigitalInput notLoaded;
+
+    private Solenoid hatchEject;
 
     private double intakeSpeed = -1;
     private double shootSpeed = 1;
@@ -23,7 +26,10 @@ public class Grabber extends Subsystem
     private Grabber()
     {
         grabberMotor = new VictorSPX(RobotMap.GRABBER_MOTOR);
-        loaded = new DigitalInput(RobotMap.BALL_LOADED);
+        grabberMotor.setInverted(true);
+        notLoaded = new DigitalInput(RobotMap.BALL_LOADED);
+
+        hatchEject = new Solenoid(RobotMap.HATCH_EJECT_SOLENOID);
     }
 
     public void intake()
@@ -41,7 +47,7 @@ public class Grabber extends Subsystem
 
     public void teleop()
     {
-        if(ds.getSecondaryController().getTriggerAxis(Hand.kLeft) > 0.5)
+        if(ds.getSecondaryController().getTriggerAxis(Hand.kLeft) > 0.5 && notLoaded.get())
         {
             intake();
         }
@@ -53,10 +59,13 @@ public class Grabber extends Subsystem
         {
             stopMotors();
         }
+
+        hatchEject.set(ds.getSecondaryController().getYButton());
     }
 
     public void disabled()
     {
+        //System.out.println(notLoaded.get());
         //DigitBoard.getInstance().writeDigits(loaded.get() ? "true" : "false");
     }
 

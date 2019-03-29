@@ -14,4 +14,8 @@ public abstract class Subsystem
 	void test() {}
 	void disabledInit() {}
 	void disabled() {}
+	void periodic() {}
+
+	void disable() {}
+	void enable() {}
 }
