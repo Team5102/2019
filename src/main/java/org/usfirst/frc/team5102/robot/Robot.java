@@ -50,7 +50,7 @@ public class Robot extends TimedRobot
 		systems.addSubsystem(Lift.getInstance());
 
 		CameraServer.getInstance().startAutomaticCapture(0);
-		//CameraServer.getInstance().startAutomaticCapture(1);
+		CameraServer.getInstance().startAutomaticCapture(1);
 	}
 
 	@Override

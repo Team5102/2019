@@ -22,7 +22,7 @@ public class SubsystemManager
 	{
 		for(Subsystem system : subsystems)
 		{
-			system.teleop();
+			system.teleopInit();
 		}
 	}
 	public void runTeleop()

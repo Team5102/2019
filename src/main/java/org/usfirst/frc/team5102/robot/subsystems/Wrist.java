@@ -72,6 +72,13 @@ public class Wrist extends PIDSubsystem
     }
 
     @Override
+    public void teleopInit()
+    {
+        switchTriggered = false;
+        setPosition(0);
+    }
+
+    @Override
     public void teleop()
     {
         if(!Presets.isRunning())
@@ -112,15 +119,16 @@ public class Wrist extends PIDSubsystem
         {
             if(!switchTriggered)
             {
-                wristMotor.getEncoder().setPosition(0);
+                wristMotor.getEncoder().setPosition(-2);
                 switchTriggered = true;
             }
+            //wristMotor.getEncoder().setPosition(-2);
         }
         else if(wristMotor.getForwardLimitSwitch(LimitSwitchPolarity.kNormallyOpen).get())
         {
             if(!switchTriggered)
             {
-                wristMotor.getEncoder().setPosition(50);
+                wristMotor.getEncoder().setPosition(47);
                 switchTriggered = true;
             }
         }

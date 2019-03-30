@@ -74,8 +74,10 @@ public class Drive extends Subsystem
 	public void teleop()
 	{
 		robotDrive.arcadeDrive(
-			-ds.getDriveController().getY(Hand.kLeft)*ds.getRightSlider(1),
-			ds.getDriveController().getX(Hand.kRight)*ds.getRightSlider(1)
+			(-ds.getDriveController().getY(Hand.kLeft)*ds.getRightSlider(1))
+			/(1+(ds.getDriveController().getTriggerAxis(Hand.kLeft))),
+			(ds.getDriveController().getX(Hand.kRight)*ds.getRightSlider(1))
+			/(1+(ds.getDriveController().getTriggerAxis(Hand.kLeft)))
 		);
 	}
 
