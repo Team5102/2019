@@ -9,9 +9,11 @@ import com.revrobotics.CANSparkMaxLowLevel.MotorType;
 import org.usfirst.frc.team5102.robot.subsystems.pid.DrivePID;
 import org.usfirst.frc.team5102.robot.util.DigitBoard;
 import org.usfirst.frc.team5102.robot.util.RobotMap;
+import org.usfirst.frc.team5102.robot.util.Toggle;
 
 import edu.wpi.first.wpilibj.GenericHID.Hand;
 import edu.wpi.first.wpilibj.drive.DifferentialDrive;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 
 public class Drive extends Subsystem
 {
@@ -22,7 +24,15 @@ public class Drive extends Subsystem
 		
 	private DifferentialDrive robotDrive;
 
-	private DrivePID pid;
+	//private DrivePID pid;
+
+	public enum DriveMode
+	{
+		NORMAL,
+		DEFENSE
+	}
+
+	private DriveMode driveMode;
 
 	private Drive()
 	{
@@ -52,6 +62,8 @@ public class Drive extends Subsystem
 		//robotDrive = new DifferentialDrive(new Talon(0), new Talon(1));
 
 		//pid = DrivePID.getInstance();
+
+		driveMode = DriveMode.NORMAL;
 	}
 
 	public void setIdleMode(IdleMode mode)
@@ -64,6 +76,26 @@ public class Drive extends Subsystem
 		rightDriveMotor3.setIdleMode(mode);
 	}
 
+	public DifferentialDrive getDrive()
+	{
+		return robotDrive;
+	}
+
+	private double getInputMagnitude()
+	{
+		double magnitude = -ds.getDriveController().getY(Hand.kLeft);
+		magnitude *= ds.getRightSlider(1);
+		magnitude /= (1+(ds.getDriveController().getTriggerAxis(Hand.kLeft)));
+		return magnitude;
+	}
+	private double getInputCurve()
+	{
+		double curve = ds.getDriveController().getX(Hand.kRight);
+		curve *= ds.getRightSlider(1);
+		curve /= (1+(ds.getDriveController().getTriggerAxis(Hand.kLeft)));
+		return curve;
+	}
+
 	@Override
 	public void teleopInit()
 	{
@@ -73,12 +105,19 @@ public class Drive extends Subsystem
 	@Override
 	public void teleop()
 	{
-		robotDrive.arcadeDrive(
-			(-ds.getDriveController().getY(Hand.kLeft)*ds.getRightSlider(1))
-			/(1+(ds.getDriveController().getTriggerAxis(Hand.kLeft))),
-			(ds.getDriveController().getX(Hand.kRight)*ds.getRightSlider(1))
-			/(1+(ds.getDriveController().getTriggerAxis(Hand.kLeft)))
-		);
+		if(!Lift.getInstance().isDriving())
+		{
+			if(driveMode.equals(DriveMode.DEFENSE))
+				robotDrive.arcadeDrive(-getInputMagnitude(), getInputCurve());
+			else
+				robotDrive.arcadeDrive(getInputMagnitude(), getInputCurve());
+
+			// robotDrive.arcadeDrive(
+			// (-ds.getDriveController().getY(Hand.kLeft)*ds.getRightSlider(1))
+			// /(1+(ds.getDriveController().getTriggerAxis(Hand.kLeft))),
+			// (ds.getDriveController().getX(Hand.kRight)*ds.getRightSlider(1))
+			// /(1+(ds.getDriveController().getTriggerAxis(Hand.kLeft))));
+		}
 	}
 
 	@Override
@@ -109,6 +148,20 @@ public class Drive extends Subsystem
 	public void disabled()
 	{
 		
+	}
+
+	@Override
+	public void periodic()
+	{
+		if(ds.getDriveController().getStartButton())
+			driveMode = DriveMode.NORMAL;
+		else if(ds.getDriveController().getBackButton())
+			driveMode = DriveMode.DEFENSE;
+
+		if(driveMode.equals(DriveMode.NORMAL))
+			SmartDashboard.putString("Drive Mode", "Normal");
+		else if(driveMode.equals(DriveMode.DEFENSE))
+			SmartDashboard.putString("Drive Mode", "Defense");
 	}
 
 	public static Drive getInstance()

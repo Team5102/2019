@@ -18,7 +18,7 @@ public class Grabber extends Subsystem
 
     private DigitalInput notLoaded;
 
-    private Solenoid hatchEject;
+    private Solenoid hatchEject, hatchGrab;
 
     private double intakeSpeed = -1;
     private double shootSpeed = 1;
@@ -30,6 +30,7 @@ public class Grabber extends Subsystem
         notLoaded = new DigitalInput(RobotMap.BALL_LOADED);
 
         hatchEject = new Solenoid(RobotMap.HATCH_EJECT_SOLENOID);
+        hatchGrab = new Solenoid(RobotMap.HATCH_GRABBER_SOLENOID);
     }
 
     public void intake()
@@ -47,11 +48,11 @@ public class Grabber extends Subsystem
 
     public void teleop()
     {
-        if(ds.getSecondaryController().getTriggerAxis(Hand.kLeft) > 0.5 && notLoaded.get())
+        if(ds.getSecondaryController().getTriggerAxis(Hand.kRight) > 0.5 && notLoaded.get())
         {
             intake();
         }
-        else if(ds.getSecondaryController().getTriggerAxis(Hand.kRight) > 0.5)
+        else if(ds.getSecondaryController().getTriggerAxis(Hand.kLeft) > 0.5)
         {
             shoot();
         }
@@ -61,6 +62,15 @@ public class Grabber extends Subsystem
         }
 
         hatchEject.set(ds.getSecondaryController().getYButton());
+
+        if(ds.getSecondaryController().getBumper(Hand.kRight))
+        {
+            hatchGrab.set(true);
+        }
+        else if(ds.getSecondaryController().getBumper(Hand.kLeft))
+        {
+            hatchGrab.set(false);
+        }
     }
 
     public void disabled()

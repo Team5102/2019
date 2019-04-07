@@ -68,10 +68,12 @@ public class Elevator extends PIDSubsystem
     public void disable()
     {
         elevatorMotor1.setIdleMode(IdleMode.kCoast);
+        elevatorMotor2.setIdleMode(IdleMode.kCoast);
     }
     public void enable()
     {
         elevatorMotor1.setIdleMode(IdleMode.kBrake);
+        elevatorMotor2.setIdleMode(IdleMode.kBrake);
     }
 
     @Override

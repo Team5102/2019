@@ -26,7 +26,7 @@ public class AbsoluteEncoder
 				while(true)
 				{
 					try {
-						Thread.sleep(5);
+						Thread.sleep(20);
 					} catch (InterruptedException e) {}
 					
 					int value = getRawValue();

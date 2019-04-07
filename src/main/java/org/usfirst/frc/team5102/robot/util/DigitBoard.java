@@ -235,7 +235,11 @@ public class DigitBoard
 		{	
 			update();
 			_display_board.writeBulk(_output_buffer);
-
+			try {
+				Thread.sleep(100);
+			} catch (InterruptedException e) {
+				break;
+			}
 		}
 	}
 	

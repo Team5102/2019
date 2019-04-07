@@ -13,7 +13,7 @@ public class PresetManager
     private static Arm arm = Arm.getInstance();
     private static Wrist wrist = Wrist.getInstance();
 
-    private enum HeightMode
+    public enum HeightMode
     {
         Hatch,
         Ball
@@ -58,7 +58,7 @@ public class PresetManager
         }
     }
 
-    public HeightMode getMode()
+    public static HeightMode getMode()
     {
         return heightMode;
     }

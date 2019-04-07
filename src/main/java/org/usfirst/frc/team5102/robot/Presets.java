@@ -50,18 +50,18 @@ public class Presets extends Thread
             case MidHatch:
                 midHatch();
                 break;
-            case HighHatch:
-                highHatch();
-                break;
+            // case HighHatch:
+            //     highHatch();
+            //     break;
             case LowBall:
                 lowBall();
                 break;
             case MidBall:
                 midBall();
                 break;
-            case HighBall:
-                highBall();
-                break;
+            // case HighBall:
+            //     highBall();
+            //     break;
         }
         isRunning = false;
     }
@@ -85,11 +85,11 @@ public class Presets extends Thread
         setPID(arm, 100, elevator, 15, 5000);
     }
 
-    private void highHatch()
-    {
-        setPID(wrist, 0, 5000);
-        setPID(arm, 100, elevator, 170, 5000);
-    }
+    // private void highHatch()
+    // {
+    //     setPID(wrist, 0, 5000);
+    //     setPID(arm, 100, elevator, 170, 5000);
+    // }
 
     public void lowBall()
     {

@@ -7,6 +7,7 @@
 
 package org.usfirst.frc.team5102.robot;
 
+import org.usfirst.frc.team5102.robot.PresetManager.HeightMode;
 import org.usfirst.frc.team5102.robot.subsystems.Arm;
 import org.usfirst.frc.team5102.robot.subsystems.Drive;
 import org.usfirst.frc.team5102.robot.subsystems.Elevator;
@@ -21,6 +22,7 @@ import org.usfirst.frc.team5102.robot.util.DriverStation5102.RobotMode;
 import edu.wpi.first.cameraserver.CameraServer;
 import edu.wpi.first.wpilibj.RobotController;
 import edu.wpi.first.wpilibj.TimedRobot;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 
 /**
  * The VM is configured to automatically run this class, and to call the
@@ -133,5 +135,14 @@ public class Robot extends TimedRobot
 		ds.updateDS();
 
 		DigitBoard.getInstance().writeDigits(RobotController.getBatteryVoltage() + "");
+
+		if(PresetManager.getMode().equals(HeightMode.Hatch))
+		{
+			SmartDashboard.putString("Preset Mode", "Hatch");
+		}
+		else
+		{
+			SmartDashboard.putString("Preset Mode", "Cargo");
+		}
 	}
 }
